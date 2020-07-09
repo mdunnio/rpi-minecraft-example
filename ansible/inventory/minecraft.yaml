@@ -1,0 +1,7 @@
+---
+
+all:
+  hosts:
+    minecraft:
+      ansible_host: # IP Address goes here, ex. 192.168.1.1
+      ansible_user: # User, ex. ubuntu

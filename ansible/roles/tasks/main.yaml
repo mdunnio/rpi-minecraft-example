@@ -1,0 +1,81 @@
+---
+
+- name: add minecraft user
+  become: yes
+  user: name="{{minecraft_user}}" home="{{minecraft_dir}}"
+
+- name: install jre
+  become: yes
+  apt: name="default-jre-headless"
+
+- name: download fabric installer
+  become: yes
+  get_url:
+    url: "{{fabric_url}}"
+    dest: "{{minecraft_dir}}/"
+    owner: "{{minecraft_user}}"
+    group: "{{minecraft_user}}"
+    mode: "0755"
+
+- name: run fabric installer
+  become: yes
+  become_user: "{{minecraft_user}}"
+  command: "java -jar {{fabric_installer}} server -dir . -downloadMinecraft"
+  args:
+    chdir: "{{minecraft_dir}}"
+
+- name: copy eula
+  become: yes
+  copy:
+    src: "eula.txt"
+    dest: "{{minecraft_dir}}/eula.txt"
+    owner: "{{minecraft_user}}"
+    group: "{{minecraft_user}}"
+
+- name: template server.properties
+  become: yes
+  template:
+    src: "server.properties.j2"
+    dest: "{{minecraft_dir}}/server.properties"
+    owner: "{{minecraft_user}}"
+    group: "{{minecraft_user}}"
+  notify: restart minecraft
+
+- name: install whitelist
+  become: yes
+  copy:
+    src: "whitelist.json"
+    dest: "{{minecraft_dir}}/whitelist.json"
+    owner: "{{minecraft_user}}"
+    group: "{{minecraft_user}}"
+  notify: restart minecraft
+
+- name: create mods dir
+  become: yes
+  file:
+    path: "{{minecraft_dir}}/mods"
+    state: directory
+    owner: "{{minecraft_user}}"
+    group: "{{minecraft_user}}"
+    mode: "0755"
+
+- name: install mods
+  become: yes
+  get_url:
+    url: "{{item}}"
+    dest: "{{minecraft_dir}}/mods/"
+    owner: "{{minecraft_user}}"
+    group: "{{minecraft_user}}"
+    mode: "0755"
+  loop: "{{fabric_mod_urls}}"
+
+- name: install systemd service
+  become: yes
+  template:
+    src: "minecraft.service.j2"
+    dest: "/lib/systemd/system/minecraft.service"
+  notify: restart minecraft
+
+- name: ensure service is started
+  become: yes
+  systemd: name="minecraft.service" enabled="yes" state="started"

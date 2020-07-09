@@ -1,0 +1,29 @@
+---
+
+minecraft_user: "minecraft"
+minecraft_dir:  "/opt/minecraft"
+
+fabric_version:   "0.6.1.45"
+fabric_installer: "fabric-installer-{{fabric_version}}.jar"
+fabric_url:       "https://maven.fabricmc.net/net/fabricmc/fabric-installer/{{fabric_version}}/{{fabric_installer}}"
+
+fabric_lithium_version: "mc1.16.1-0.5.0-rc1"
+fabric_lithium_jar: "lithium-fabric-{{fabric_lithium_version}}.jar"
+fabric_lithium_url: "https://github.com/jellysquid3/lithium-fabric/releases/download/{{fabric_lithium_version}}/{{fabric_lithium_jar}}"
+
+fabric_phosphor_version: "mc1.16.1-0.6.0"
+fabric_phosphor_build: "build.7"
+fabric_phosphor_jar: "phosphor-fabric-{{fabric_phosphor_version}}+{{fabric_phosphor_build}}.jar"
+fabric_phosphor_url: "https://github.com/jellysquid3/phosphor-fabric/releases/download/{{fabric_phosphor_version|replace('-', '-v')}}/{{fabric_phosphor_jar}}"
+
+fabric_mod_urls: ["{{fabric_lithium_url}}", "{{fabric_phosphor_url}}"]
+
+minecraft_mem: "6G"
+
+level_name: "world"
+motd: "A Minecraft Server"
+difficulty: "easy"
+max_tick_time: 60000
+white_list: "false"
+enforce_whitelist: "false"
+view_distance: 10
